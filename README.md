@@ -1,7 +1,7 @@
 # crawlers
 Some crawlers collected from various projects
 
-## 大众点评上综合商场/小区/商务楼等site的完整抓取
+## 1 大众点评综合商场/小区/商务楼等site的完整抓取
 
 ### 示例
 抓取如下图页面中每一个item的全部信息，存储到给定的outputfile中
@@ -15,12 +15,16 @@ Some crawlers collected from various projects
 综合商场的url = "http://www.dianping.com/search/category/1/20/g119"
 商务楼的url = "http://www.dianping.com/search/category/1/80/g26466"
 
-## place.weibo.com的搜索信息爬取
+## 2 place.weibo.com的搜索信息爬取
 
 ### 示例
 在place.weibo中搜索一个地名，会出现很多搜索结果，每条结果显示了该地点有多少用户check过。
 例如，搜索`iapm`，返回的结果如下
+
+
 ![](http://ww2.sinaimg.cn/large/901f9a6fjw1f1gaad8tu1j20ha0kzjul.jpg)
+
+
 该爬虫即爬取全部的搜索结果，并存储到指定文件
 
 ### 使用方法
@@ -40,7 +44,7 @@ Some crawlers collected from various projects
  2. 将结果输出到文件时，代码中所用到的分隔符可能会出现在地点的名称/地址等处，如果遇到解析出错的情况，需手动调整
  
 
-## Unwrap place.weibo得到的数据，并进行绘图
+## 3 Unwrap place.weibo得到的数据，并进行绘图
 
 ### 功能
 可以根据site的微博数对所有sites进行排序，提取Top 1000的sites的经纬度坐标并绘图
