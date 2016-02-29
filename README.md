@@ -28,7 +28,7 @@ Some crawlers collected from various projects
 该爬虫即爬取全部的搜索结果，并存储到指定文件
 
 ### 使用方法
- 1. 打开浏览器，登陆http://place.weibo.com/，在“审查元素”中找到cookie，如下图：
+ 1. 打开浏览器，登陆[http://place.weibo.com/](http://place.weibo.com/)，在“审查元素”中找到cookie，如下图：
 ![](http://ww1.sinaimg.cn/large/901f9a6fjw1f1gagho3z0j20i404975f.jpg)
 复制当前cookie的全部内容，替换query_weibodata.py中的`COOKIE`常量，保存即可
  2. 在terminal中运行
