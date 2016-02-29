@@ -1,5 +1,5 @@
 # crawlers
-Some crawlers collected from various projects
+Some crawlers used in various projects
 
 ## 1 大众点评综合商场/小区/商务楼等site的完整抓取
 
