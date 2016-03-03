@@ -7,8 +7,8 @@ class Position(object):
 	name = ''
 	road = ''
 	weiboNum = 0
-	longitude = -1.0;
-	latitude = -1.0;
+	longitude = -1.0; # 经度
+	latitude = -1.0; # 纬度
 	def __init__(self, name):
 		self.name = name
 
@@ -21,7 +21,7 @@ def readWeiboResult(fileName):
 	else:
 		for line in f:
 			line = line.decode('utf-8')
-			parts = line.split('*')
+			parts = line.split('*') # # or *
 			pos = Position(parts[0])
 			posList.append(pos) # 存储所有的有信息mall
 			roadAndNum = {}
@@ -32,6 +32,7 @@ def readWeiboResult(fileName):
 
 			for subpart in parts[1:-1]:
 			# subpart = 上海环球金融中心$上海市浦东新区世纪大道100号（观光厅入口在东泰路靠近花园石桥路）$28672$20233$15252$(31.241, 121.514)
+				# print subpart
 				roadName = preprocessAddr(subpart.split('$')[1]) # 解析出道路名
 				roadName = cnParse(roadName)['road']
 				roadAndNum.setdefault(roadName, 0)
@@ -52,26 +53,46 @@ def readWeiboResult(fileName):
 	# 有的address中解析不出road这个key，那么l中就会存在key=None
 		
 
-def getResultShow(posList):
+def getResultShow(posList, datatype = "mall"):
 	import matplotlib.pyplot as plt
-	x1 = [pos.longitude for pos in posList[:400]]
-	y1 = [pos.latitude for pos in posList[:400]]
+	# 商务楼2005个  bussi229.txt
+	# 住宅区7425个 house225.txt
+	# 购物中心544个（query_mall_223.txt）
+	# x1 = [pos.longitude for pos in posList[:400]]
+	# y1 = [pos.latitude for pos in posList[:400]]
+	if datatype == "mall":
+		top = 100
+	elif datatype == "residence":
+		top = 1500
+	else:
+		# 商务楼
+		top = 500
 
-	x2 = [pos.longitude for pos in posList[400:800]]
-	y2 = [pos.latitude for pos in posList[400:800]]
+	x1 = [pos.longitude for pos in posList[:top]]
+	y1 = [pos.latitude for pos in posList[:top]]
 
-	x3 = [pos.longitude for pos in posList[800:1200]]
-	y3 = [pos.latitude for pos in posList[800:1200]]
 
-	plot1, = plt.plot(x1, y1, 'ro', label = u'前400/2939')
+	# x2 = [pos.longitude for pos in posList[400:800]]
+	# y2 = [pos.latitude for pos in posList[400:800]]
+
+	# x3 = [pos.longitude for pos in posList[800:1200]]
+	# y3 = [pos.latitude for pos in posList[800:1200]]
+
+	plt.figure(figsize = (50,50), dpi = 60)
+	plt.xlim((30.6, 31.7))
+	plt.ylim((121.0, 122.0))
+	plot1, = plt.plot(x1, y1, 'go', label = u'前{}/{}'.format(top, len(posList)))
 	# plot2, = plt.plot(x2, y2, 'bo', label = u'前800/2939')
 	# plot3, = plt.plot(x3, y3, 'go', label = u'前1200/2939')
 	
-	plt.title('Business Sites in Shanghai')
+	plt.title('{} in Shanghai'.format(datatype.capitalize()))
+
+
 	plt.xlabel('longitude')
 	plt.ylabel('latitude')
-	plt.legend([plot1], ['400/7425'])
-	plt.show()
+	plt.legend([plot1], ['{}/{}'.format(top, len(posList))])
+	# plt.show()
+	plt.savefig("{}.png".format(datatype))
 
 def preprocessAddr(s):
 	# 上海市浦东新区世纪大道100号（观光厅入口在东泰路靠近花园石桥路）
@@ -89,8 +110,35 @@ def preprocessAddr(s):
 	s = re.sub(re.compile('\\s'), "", s)
 	return re.sub(pat, '', s)
 
+def drawHist(posList):
+	# 传入的是排好序的posList
+	import matplotlib.pyplot as plt
+	weiboNumList = [pos.weiboNum for pos in posList]
+	with open('house_weiboNum.txt', 'w') as out:
+		for pos in posList:
+			out.write(str(pos.weiboNum) + '\n')
+
+	maxValue = max(weiboNumList)
+	minValue = min(weiboNumList)
+	print maxValue, minValue
+	# plt.hist(weiboNumList, bins = 10)
+	# plt.show()
+
 if __name__ == '__main__':
-	posList = readWeiboResult("result_business.txt")
+	import sys
+
+	filename = sys.argv[1]
+	datatype = sys.argv[2]
+	# 这个时候posList还没排序
+	posList = readWeiboResult(filename)
+	# 将posList按Position的微博数排序，排序后posList有序了
 	posList.sort(lambda a, b: b.weiboNum - a.weiboNum)
-	getResultShow(posList)
+	print len(posList)
+	from ap import affinity_propagation
+	affinity_propagation(posList[:100], 10, 0.5)
+	# a = generate_similarity_matrix(posList[:4])
+	# print a
+	# drawHist(posList)
+	# getResultShow(posList, datatype)
+	
 
